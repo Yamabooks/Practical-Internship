@@ -31,5 +31,6 @@ OpenAIが開発した<br>
 
 ### GUI<br>
 候補：<br>
-Tkinter
+Tkinter<br>
+画像とテキストを表示できる 3dは難しい
 
