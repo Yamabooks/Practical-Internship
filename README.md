@@ -1,6 +1,6 @@
 # Practical-Internship
 実習用GoogleDrive<br>
-https://drive.google.com/drive/folders/1IyQvxG9HY82FNdWCpQsyyrJPuvQ35GC2?usp=sharing
+https://drive.google.com/drive/folders/1IyQvxG9HY82FNdWCpQsyyrJPuvQ35GC2?usp=sharing<br>
 
 臨地実習第３回用レポジトリ<br>
 テーマ：車載AIアバター実装
