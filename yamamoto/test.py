@@ -21,7 +21,7 @@ def load_gif(filename):
     return frames
 
 # GIFのフレームを読み込み（サイズ変更なし）
-frames = load_gif("./images/talk_zunda.gif")  # GIFファイルのパスを指定
+frames = load_gif("./images/wait_zunda.gif")  # GIFファイルのパスを指定
 
 # ラベルを作成
 label = tk.Label(root)
