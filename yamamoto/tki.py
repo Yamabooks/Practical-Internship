@@ -2,10 +2,8 @@ def main():
 
     import sys
     import tkinter as tk
-    import tkinter as ttk
     import tkinter.messagebox as tkm
     from tkinter import PhotoImage
-    import pya3rt
     from PIL import Image, ImageTk
     import google.generativeai as genai
 
@@ -40,21 +38,16 @@ def main():
     #root.geometry('400x300')
 
     # オブジェクトの定義
-    zunda_path = './images/zunda.png'
-    zunda = Image.open(zunda_path)
-    zunda = zunda.resize((300, 450), Image.LANCZOS)
-    zunda = ImageTk.PhotoImage(zunda)
+    zunda_path = './images/zunda_talk.gif'
+    zunda = tk.PhotoImage(zunda_path)
 
-    label = ttk.Label(
+    label = tk.Label(
         root,
         text="Hello, Tkinter!..なのだ", # テキスト
-        foreground = '#1155ee', # テキストカラー
-        font = ('Times New Roman',20), # （フォント名、サイズ）
-        wraplength = 400, # テキストの折り返しをピクセルで指定
         image = zunda,
         compound = 'top' # イメージ表示位置
         )
-    label.pack(side=tk.LEFT, padx=10)
+    label.pack(padx=10)
 
     # ラベルを使って文字を画面上に出す
     Static1 = tk.Label(text=u'▼　Seriに話しかけよう!　▼')

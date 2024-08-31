@@ -1,25 +1,41 @@
-import os
+import tkinter as tk
+from PIL import Image, ImageTk
 
-import google.generativeai as genai
+# メインウィンドウを作成
+root = tk.Tk()
+root.title("Original Size Animated GIF Example")
 
-genai.configure(api_key='AIzaSyBgkZOQx6laXC_DgRBu15CXrXJCNsuM5_Y')
+# GIFのフレームを読み込む関数（サイズ変更なし）
+def load_gif(filename):
+    # PILを使用してGIFを開く
+    gif = Image.open(filename)
+    frames = []
 
-print("サポートしているモデル")
-for m in genai.list_models():
-  if 'generateContent' in m.supported_generation_methods:
-    print(m.name)
+    # 各フレームをTkinter用に変換
+    for i in range(gif.n_frames):
+        gif.seek(i)  # i番目のフレームを選択
+        frame = gif.copy()  # フレームをコピー（オリジナルサイズのまま）
+        tk_frame = ImageTk.PhotoImage(frame)  # Tkinter用に変換
+        frames.append(tk_frame)
 
+    return frames
 
-model = genai.GenerativeModel('gemini-pro')
+# GIFのフレームを読み込み（サイズ変更なし）
+frames = load_gif("./images/talk_zunda.gif")  # GIFファイルのパスを指定
 
-# chat model
-chat = model.start_chat(history=[])
-while True:
-  prompt=input('なにか話してください：　')
-  if prompt == 'exit':
-    break
-  response = chat.send_message(prompt)
-  print(response.text)
-  
-print(chat.history)
+# ラベルを作成
+label = tk.Label(root)
+label.pack()
 
+# アニメーションを更新する関数
+def update_frame(index):
+    frame = frames[index]
+    label.config(image=frame)
+    index = (index + 1) % len(frames)  # 次のフレームに移動（ループ）
+    root.after(300, update_frame, index)  # 200ミリ秒後に次のフレームに更新
+
+# アニメーションを開始
+update_frame(0)
+
+# ウィンドウを表示
+root.mainloop()
