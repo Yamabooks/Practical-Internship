@@ -20,39 +20,44 @@ def main():
     root.title("Sample Application")
 
     # ここでウインドウサイズを定義する
-    #root.geometry('800x600')
+    root.geometry('1000x600')
 
     # メインフレーム作成
-    main_frame = tk.Frame(root, width=400, height=400)
-    main_frame.pack(side=tk.LEFT, fill=tk.Y)
+    main_frame = tk.Frame(root, bg='lightblue')
+    # サブフレーム作成
+    sub_frame = tk.Frame(root, bg='lightgreen')
 
-    gif_label = tk.Label()
+    # gifラベル作成
+    gif_label = tk.Label(main_frame,text='ずんだもんなのか？')
+
+    chat_player = chat_box
+
+    # ラベルを使って文字を画面上に出す
+    Static1 = tk.Label(sub_frame, text=u'▼　Seriに話しかけよう!　▼')
+
+    # 入力ボックス
+    entry = tk.Entry(sub_frame, width=100)
+    entry.insert(tk.END, u'こんにちは')
+
+    # ボタンを設置
+    button = tk.Button(sub_frame, text = u'送信', width=100, command=lambda: addList(entry.get()))
+
+    # リストボックスを設置
+    listbox = tk.Listbox(sub_frame, width=100, height=14)
+
+    # ウィジェットの配置
+    main_frame.pack(side=tk.LEFT, fill=tk.Y)
+    sub_frame.pack(side=tk.RIGHT, fill=tk.Y)
+
     gif_label.pack()
+    Static1.pack()
+    entry.pack()
+    button.pack()
+    button.pack()
 
     # アニメーションを開始
     gif_player = TkGif(zunda1_path, gif_label)
     gif_player.play()
-
-    # サブフレーム作成
-    sub_frame = tk.Frame(root, width=400, height=400)
-    sub_frame.pack(side=tk.RIGHT, fill=tk.Y)
-
-    # ラベルを使って文字を画面上に出す
-    Static1 = tk.Label(text=u'▼　Seriに話しかけよう!　▼')
-    Static1.pack()
-
-    # 入力ボックス
-    entry = tk.Entry(width=50)
-    entry.insert(tk.END, u'こんにちは')
-    entry.pack()
-
-    # ボタンを設置
-    button = tk.Button(text = u'送信', width=50, command=lambda: addList(entry.get()))
-    button.pack()
-
-    # リストボックスを設置
-    listbox = tk.Listbox(width=55, height=14)
-    listbox.pack()
 
     root.mainloop()
 

@@ -1,41 +1,39 @@
+# tkinterのインポート
 import tkinter as tk
-from PIL import Image, ImageTk
+import tkinter.ttk as ttk
 
-# メインウィンドウを作成
+# rootメインウィンドウの設定
 root = tk.Tk()
-root.title("Original Size Animated GIF Example")
+root.title("Frame")
+root.geometry("1000x1000")
 
-# GIFのフレームを読み込む関数（サイズ変更なし）
-def load_gif(filename):
-    # PILを使用してGIFを開く
-    gif = Image.open(filename)
-    frames = []
+# toolbarの設定
+frame_top = tk.Frame(root, pady=5, padx=5, relief=tk.RAISED, bd=2)
 
-    # 各フレームをTkinter用に変換
-    for i in range(gif.n_frames):
-        gif.seek(i)  # i番目のフレームを選択
-        frame = gif.copy()  # フレームをコピー（オリジナルサイズのまま）
-        tk_frame = ImageTk.PhotoImage(frame)  # Tkinter用に変換
-        frames.append(tk_frame)
+button1 = tk.Button(frame_top, text='Open')
+button2 = tk.Button(frame_top, text='Close')
 
-    return frames
+button1.pack(side=tk.LEFT)
+button2.pack(side=tk.LEFT, padx=5)
 
-# GIFのフレームを読み込み（サイズ変更なし）
-frames = load_gif("./images/talk_zunda.gif")  # GIFファイルのパスを指定
+frame_top.pack(fill=tk.X)
 
-# ラベルを作成
-label = tk.Label(root)
+# 左カラム
+frame_left = tk.Frame(root, pady=5, padx=5, relief=tk.RAISED, bd=1, bg="white")
+button1_left = tk.Button(frame_left, text="Func1", width=10)
+button2_left = tk.Button(frame_left, text="Func2", width=10)
+
+# 右カラム
+frame_right = tk.Frame(root, pady=5, padx=5,bg="red",width=700,height=200)
+label = tk.Label(frame_right, text='This is Label.',width=500)
+
+# ウィジェットの配置
+frame_left.pack(side=tk.LEFT, fill=tk.Y)
+frame_right.pack(side=tk.LEFT)
+
+button1_left.pack()
+button2_left.pack(pady=5)
+
 label.pack()
 
-# アニメーションを更新する関数
-def update_frame(index):
-    frame = frames[index]
-    label.config(image=frame)
-    index = (index + 1) % len(frames)  # 次のフレームに移動（ループ）
-    root.after(300, update_frame, index)  # 200ミリ秒後に次のフレームに更新
-
-# アニメーションを開始
-update_frame(0)
-
-# ウィンドウを表示
 root.mainloop()
