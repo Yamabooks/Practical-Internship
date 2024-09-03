@@ -53,8 +53,9 @@ class GifPlayer(threading.Thread):
         self.last_frame_index = None
 
         # フレームの読み込み
-        self.load_frames2()
+        self.load_frames1()
 
+    # 残像なし
     def load_frames1(self):
         if isinstance(self.path1, str):
             img = Image.open(self.path1)
@@ -70,6 +71,7 @@ class GifPlayer(threading.Thread):
             self.frames = frames
             self.last_frame_index = frame_index - 1
 
+    # 残像あり
     def load_frames2(self):
         frames = []
         frame_index = 0
@@ -84,11 +86,20 @@ class GifPlayer(threading.Thread):
     def run(self):
         frame_index = 0
         while not self._please_stop:
-            self.label.configure(image=self.frames[frame_index])
-            frame_index += 1
-            if frame_index > self.last_frame_index:
-                frame_index = 0
+            if self.frames:  # フレームが存在する場合のみ実行
+                # インデックスが範囲内であることを確認
+                if frame_index < len(self.frames):
+                    self.label.configure(image=self.frames[frame_index])
+                    frame_index += 1
+                else:
+                    frame_index = 0  # フレーム数を超えたらリセット
+            else:
+                # フレームがない場合の対処（例えばログを出力するなど）
+                print("No frames to display.")
+            
             sleep(0.50)
+
+
 
     def stop(self):
         self._please_stop = True
@@ -96,7 +107,7 @@ class GifPlayer(threading.Thread):
     def update_gif(self, path):
         """GIFのパスを更新する"""
         self.path1 = path
-        self.load_frames2()
+        self.load_frames1()
 
 class TkGif:
     def __init__(self, root, path1, path2, frame: tk.Frame) -> None:
@@ -196,8 +207,7 @@ class ChatPlayer:
         self.client.play_wav(wav)
         sleep(0.50) # 時間を空ける
         # 音声再生後にGIFをpath1に戻す
-        self.root.after(self.client.get_audio_duration(wav), self.gif_player.update_gif, self.gif_player.path1)
-
+        self.gif_player.update_gif(self.gif_player.path1)
 
 
     def talk(self, say):
