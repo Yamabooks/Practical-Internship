@@ -1,73 +1,93 @@
-def main():
+import sys
+import tkinter as tk
+import tkinter.messagebox as tkm
+from tkinter import PhotoImage
+from PIL import Image, ImageTk
+import google.generativeai as genai
 
-    import sys
-    import tkinter as tk
-    import tkinter.messagebox as tkm
-    from tkinter import PhotoImage
-    from PIL import Image, ImageTk
-    import google.generativeai as genai
+class ChatPlayer:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Sample Application")
 
-    # ボタンが押されたらリストボックスに、Entryの中身を追加
-    def addList(text):
+        # Initialize generative model
+        genai.configure(api_key="AIzaSyBgkZOQx6laXC_DgRBu15CXrXJCNsuM5_Y")
+        self.model = genai.GenerativeModel('gemini-pro')
+
+        # Define GUI elements
+        self.create_widgets()
+
+    def create_widgets(self):
+        # Set up the window size
+        # self.root.geometry('400x300')
+
+        # Load and set the image
+        zunda_path = './images/talk_zunda.gif'
+        self.zunda = tk.PhotoImage(file=zunda_path)
+
+        label = tk.Label(
+            self.root,
+            text="Hello, Tkinter!..なのだ",  # Text
+            image=self.zunda,
+            compound='top'  # Image display position
+        )
+        label.pack(padx=10)
+
+        # Label for instructions
+        Static1 = tk.Label(text=u'▼　Seriに話しかけよう!　▼')
+        Static1.pack()
+
+        # Input box
+        self.lbl_entry = tk.Entry(width=50)
+        self.lbl_entry.insert(tk.END, u'こんにちは')
+        self.lbl_entry.pack()
+
+        # Send button
+        lbl_button = tk.Button(text=u'送信', width=50, command=self.on_send_button_click)
+        lbl_button.pack()
+
+        # Listbox for chat history
+        self.lbl_listbox = tk.Listbox(width=55, height=14)
+        self.lbl_listbox.pack()
+
+    def on_send_button_click(self):
+        text = self.lbl_entry.get()
+        self.add_to_list(text)
+
+    def add_to_list(self, text):
         mysay = 'you: ' + text
         print(mysay)
-        lbl_listbox.insert(tk.END, mysay)
-        Seri = 'Seri: ' + talk(text)
-        lbl_entry.delete(0, tk.END)
-        addRep(Seri)
+        self.lbl_listbox.insert(tk.END, mysay)
+        Seri = 'Seri: ' + self.talk(text)
+        self.lbl_entry.delete(0, tk.END)
+        self.add_response(Seri)
 
-    def addRep(Seri):
-        lbl_listbox.insert(tk.END, Seri)
+    def add_response(self, Seri):
+        self.lbl_listbox.insert(tk.END, Seri)
 
-    def talk(say):
+    def talk(self, say):
         if say == 'end':
-            return('ではまた')
+            return 'ではまた'
         else:
-            response = model.generate_content(say)
-            assistant_response = response.text
-            return(assistant_response)
+            try:
+                # Chatbotの応答を生成する部分
+                response = self.model.generate_content(say)
+                assistant_response = response.text
+                return assistant_response
+            except Exception as e:
+                # エラーが発生した場合、メッセージボックスでエラーを表示
+                tkm.showerror("エラー", f"応答を生成できませんでした: {str(e)}")
+                return "エラーが発生しました。もう一度お試しください。"
 
-    genai.configure(api_key="AIzaSyBgkZOQx6laXC_DgRBu15CXrXJCNsuM5_Y")
-    model = genai.GenerativeModel('gemini-pro')
-
-    # GUIの基本ウィンドウを作成
+def main():
+    # Create the main window
     root = tk.Tk()
-    root.title("Sample Application")
 
-    # ここでウインドウサイズを定義する
-    #root.geometry('400x300')
+    # Instantiate the ChatPlayer class with the root window
+    app = ChatPlayer(root)
 
-    # オブジェクトの定義
-    zunda_path = './images/zunda_talk.gif'
-    zunda = tk.PhotoImage(zunda_path)
-
-    label = tk.Label(
-        root,
-        text="Hello, Tkinter!..なのだ", # テキスト
-        image = zunda,
-        compound = 'top' # イメージ表示位置
-        )
-    label.pack(padx=10)
-
-    # ラベルを使って文字を画面上に出す
-    Static1 = tk.Label(text=u'▼　Seriに話しかけよう!　▼')
-    Static1.pack()
-
-    # 入力ボックス
-    lbl_entry = tk.Entry(width=50)
-    lbl_entry.insert(tk.END, u'こんにちは')
-    lbl_entry.pack()
-
-    # ボタンを設置
-    lbl_button = tk.Button(text = u'送信', width=50, command=lambda: addList(lbl_entry.get()))
-    lbl_button.pack()
-
-    # リストボックスを設置
-    lbl_listbox = tk.Listbox(width=55, height=14)
-    lbl_listbox.pack()
-
+    # Run the main loop
     root.mainloop()
 
-
-if __name__== "__main__":
+if __name__ == "__main__":
     main()
