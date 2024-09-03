@@ -1,7 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import tkinter.messagebox as tkm
-from tkinter import PhotoImage
 import google.generativeai as genai
 from PIL import Image, ImageTk
 from time import sleep
@@ -163,6 +162,7 @@ class ChatPlayer:
     def process_text(self, text):
         try:
             Seri = 'Seri: ' + self.talk(text)
+            print(Seri)
         except Exception as e:
             Seri = 'Seri: エラーが発生しました。'
             print(f"Error: {e}")
@@ -173,11 +173,10 @@ class ChatPlayer:
         self.root.after(0, self.button.config, {'state': tk.NORMAL, 'text': '送信'})
 
     def add_response(self, Seri):
-        self.listbox.insert(tk.END, Seri)
-        self.speak(Seri)
 
-    def speak(self, text):
-        self.client.text_to_voice(text)
+        wav = self.client.text_to_voice(Seri)
+        self.listbox.insert(tk.END, Seri)
+        self.client.play_wav(wav)
 
     def talk(self, say):
         if say == 'end':

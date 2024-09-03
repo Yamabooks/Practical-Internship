@@ -12,6 +12,7 @@ class VoiceVoxClient:
         self.speaker_id = speaker_id
         self.voicevox_path = voicevox_path
         self.base_url = 'http://localhost:50021'
+        self.wav = None
         
         # VOICEVOXが実行中でない場合は起動
         if not self.is_process_running('VOICEVOX.exe'):  # 実際のプロセス名に合わせて変更してください
@@ -50,6 +51,13 @@ class VoiceVoxClient:
         res.raise_for_status()  # エラーレスポンスがあれば例外を発生させる
         return res.content
 
+    def text_to_voice(self, text: str):
+        """テキストを音声に変換する。"""
+        res = self.post_audio_query(text)
+        self.wav = self.post_synthesis(res)
+        #self.play_wav(wav)
+        return self.wav
+    
     @staticmethod
     def play_wav(wav_file: bytes):
         """WAVファイルデータをPyAudioで再生する。"""
@@ -69,9 +77,4 @@ class VoiceVoxClient:
         sleep(0.5)
         stream.close()
         p.terminate()
-
-    def text_to_voice(self, text: str):
-        """テキストを音声に変換する。"""
-        res = self.post_audio_query(text)
-        wav = self.post_synthesis(res)
-        self.play_wav(wav)
+        
