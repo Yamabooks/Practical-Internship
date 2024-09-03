@@ -36,7 +36,7 @@ def main():
     client = VoiceVoxClient()
 
     # チャットボットを作成
-    chat_player = ChatPlayer(root, sub_frame, client)
+    chat_player = ChatPlayer(root, sub_frame, client, gif_player)
 
     root.mainloop()
 
@@ -92,6 +92,11 @@ class GifPlayer(threading.Thread):
 
     def stop(self):
         self._please_stop = True
+    
+    def update_gif(self, path):
+        """GIFのパスを更新する"""
+        self.path1 = path
+        self.load_frames2()
 
 class TkGif:
     def __init__(self, root, path1, path2, frame: tk.Frame) -> None:
@@ -115,12 +120,16 @@ class TkGif:
 
     def stop_loop(self):
         self.player.stop()
+    
+    def update_gif(self, path):
+        self.player.update_gif(path)
 
 class ChatPlayer:
-    def __init__(self, root, frame: tk.Frame, client):
+    def __init__(self, root, frame: tk.Frame, client, gif_player):
         self.root = root
         self.frame = frame
         self.client = client
+        self.gif_player = gif_player
 
         genai.configure(api_key="AIzaSyBgkZOQx6laXC_DgRBu15CXrXJCNsuM5_Y")
         self.model = genai.GenerativeModel('gemini-pro')
@@ -145,8 +154,11 @@ class ChatPlayer:
 
     def on_send_button_click(self):
         text = self.entry.get()
-        self.entry.delete(0, tk.END)
-        self.add_to_list(text)
+        if text.lower() in ['終了', 'exit']:
+            self.root.quit()  # アプリケーションを終了
+        else:
+            self.entry.delete(0, tk.END)
+            self.add_to_list(text)
 
     def add_to_list(self, text):
         mysay = 'you: ' + text
@@ -161,22 +173,32 @@ class ChatPlayer:
 
     def process_text(self, text):
         try:
-            Seri = 'Seri: ' + self.talk(text)
+            text = self.talk(text)
+            Seri = 'Seri: ' + text
             print(Seri)
         except Exception as e:
             Seri = 'Seri: エラーが発生しました。'
             print(f"Error: {e}")
         
-        self.add_response(Seri)
+        self.add_response(text, Seri)
 
         # 処理が終わったらボタンを有効化
         self.root.after(0, self.button.config, {'state': tk.NORMAL, 'text': '送信'})
 
-    def add_response(self, Seri):
-
-        wav = self.client.text_to_voice(Seri)
+    def add_response(self, text, Seri):
+        # 音声を作成
+        wav = self.client.text_to_voice(text)
+        # 音声再生前にGIFをpath2に切り替え
+        self.gif_player.update_gif(self.gif_player.path2)
+        # 文章を表示
         self.listbox.insert(tk.END, Seri)
+        # 音声を再生
         self.client.play_wav(wav)
+        sleep(0.50) # 時間を空ける
+        # 音声再生後にGIFをpath1に戻す
+        self.root.after(self.client.get_audio_duration(wav), self.gif_player.update_gif, self.gif_player.path1)
+
+
 
     def talk(self, say):
         if say == 'end':

@@ -6,9 +6,10 @@ import io
 from time import sleep
 import subprocess
 import psutil
+from pydub import AudioSegment
 
 class VoiceVoxClient:
-    def __init__(self, speaker_id: int = 8, voicevox_path: str = "C:/Users/chihi/Desktop/VOICEVOX.lnk"):
+    def __init__(self, speaker_id: int = 3, voicevox_path: str = "C:/Users/chihi/Desktop/VOICEVOX.lnk"):
         self.speaker_id = speaker_id
         self.voicevox_path = voicevox_path
         self.base_url = 'http://localhost:50021'
@@ -77,4 +78,10 @@ class VoiceVoxClient:
         sleep(0.5)
         stream.close()
         p.terminate()
+
+    def get_audio_duration(self, audio_data: bytes) -> int:
+        """音声データの長さをミリ秒単位で取得する。"""
+        #audio = AudioSegment.from_file(io.BytesIO(audio_data), format="wav")
+        #return len(audio)
+        return 5
         
