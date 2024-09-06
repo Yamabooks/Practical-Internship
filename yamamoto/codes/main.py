@@ -7,7 +7,8 @@ from time import sleep
 import threading
 from time import time
 
-from voicevox_client import VoiceVoxClient
+from voicevox_client1 import VoiceVoxClient
+from voicevox_client2 import VoiceGenerator
 
 def main():
     # オブジェクトの定義
@@ -34,7 +35,8 @@ def main():
     gif_player.play()
 
     # Voicevox起動
-    client = VoiceVoxClient()
+    #client = VoiceVoxClient() # オンライン用
+    client = VoiceGenerator() # オフライン用
 
     # チャットボットを作成
     chat_player = ChatPlayer(root, sub_frame, client, gif_player)

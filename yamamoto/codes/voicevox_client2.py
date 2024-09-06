@@ -1,4 +1,8 @@
+from ctypes import CDLL
 from pathlib import Path
+
+CDLL(str(Path("DLLの場所").resolve(strict=True)))
+
 from voicevox_core import VoicevoxCore
 
 class VoiceGenerator:
@@ -18,7 +22,3 @@ class VoiceGenerator:
         with open(self.output_file, "wb") as f:
             f.write(wave_bytes)  # ファイルに書き出す
         print(f"音声ファイル '{self.output_file}' が生成されました。")
-
-# 使用例
-voice_generator = VoiceGenerator()
-voice_generator.text_to_voice("こんにちは、これはテストです。")
