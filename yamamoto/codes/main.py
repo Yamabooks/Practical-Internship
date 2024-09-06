@@ -7,7 +7,7 @@ from time import sleep
 import threading
 from time import time
 
-from voicevox_client1 import VoiceVoxClient
+#from voicevox_client1 import VoiceVoxClient
 from voicevox_client2 import VoiceGenerator
 
 def main():
@@ -199,7 +199,7 @@ class ChatPlayer:
         start_time = time()  # Record the start time
         
         # 音声を作成
-        wav = self.client.text_to_voice(text)
+        self.client.text_to_voice(text)
 
         end_time = time()  # Record the end time
         elapsed_time = end_time - start_time
@@ -210,7 +210,7 @@ class ChatPlayer:
         # 文章を表示
         self.listbox.insert(tk.END, Seri)
         # 音声を再生
-        self.client.play_wav(wav)
+        self.client.play_wav("yamamoto/codes/output.wav")
         sleep(0.50) # 時間を空ける
         # 音声再生後にGIFをpath1に戻す
         self.gif_player.update_gif(self.gif_player.path1)
