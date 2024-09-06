@@ -5,6 +5,7 @@ import google.generativeai as genai
 from PIL import Image, ImageTk
 from time import sleep
 import threading
+from time import time
 
 from voicevox_client import VoiceVoxClient
 
@@ -65,8 +66,8 @@ class GifPlayer(threading.Thread):
         try:
             while True:
                 frames.append(ImageTk.PhotoImage(img.copy()))
-                img.seek(frame_index)
                 frame_index += 1
+                img.seek(frame_index)
         except EOFError:
             self.frames = frames
             self.last_frame_index = frame_index - 1
@@ -89,7 +90,7 @@ class GifPlayer(threading.Thread):
             if self.frames:  # フレームが存在する場合のみ実行
                 # インデックスが範囲内であることを確認
                 if frame_index < len(self.frames):
-                    self.label.configure(image=self.frames[frame_index])
+                    self.label.after(0, self.label.configure, {'image': self.frames[frame_index]})
                     frame_index += 1
                 else:
                     frame_index = 0  # フレーム数を超えたらリセット
@@ -99,15 +100,15 @@ class GifPlayer(threading.Thread):
             
             sleep(0.50)
 
-
-
     def stop(self):
         self._please_stop = True
     
     def update_gif(self, path):
         """GIFのパスを更新する"""
         self.path1 = path
-        self.load_frames1()
+        self.load_frames2()
+    
+    
 
 class TkGif:
     def __init__(self, root, path1, path2, frame: tk.Frame) -> None:
@@ -116,17 +117,12 @@ class TkGif:
         self.path2 = path2
         self.frame = frame
 
-        self.create_widget()
-
-    def create_widget(self):
-        self.label = tk.Label(
-            self.frame,
-            text='ずんだもんなのだ!'
-            )
+        self.label = tk.Label(self.frame, text='ずんだもんなのだ!')
         self.label.pack()
 
-    def play(self):
         self.player = GifPlayer(self.path1, self.path2, self.label)
+
+    def play(self):
         self.player.start()
 
     def stop_loop(self):
@@ -134,6 +130,7 @@ class TkGif:
     
     def update_gif(self, path):
         self.player.update_gif(path)
+
 
 class ChatPlayer:
     def __init__(self, root, frame: tk.Frame, client, gif_player):
@@ -197,8 +194,15 @@ class ChatPlayer:
         self.root.after(0, self.button.config, {'state': tk.NORMAL, 'text': '送信'})
 
     def add_response(self, text, Seri):
+        start_time = time()  # Record the start time
+        
         # 音声を作成
         wav = self.client.text_to_voice(text)
+
+        end_time = time()  # Record the end time
+        elapsed_time = end_time - start_time
+        print(f"{elapsed_time:.2f} seconds.")
+
         # 音声再生前にGIFをpath2に切り替え
         self.gif_player.update_gif(self.gif_player.path2)
         # 文章を表示
