@@ -1,0 +1,23 @@
+参考URL 
+https://qiita.com/taka7n/items/1dc61e507274b93ee868
+
+1, voicevox_coreのライブラリをインストール
+（.whlのやつ）
+
+2,ONNX Runtimeのダウンロード
+展開後のlibフォルダ内のdllをカレントディレクトリ直下にコピー
+
+辞書ファイルのダウンロード
+(ファイル内にzipあり)
+展開後、カレントディレクトリ直下に配置
+
+実行
+from pathlib import Path
+from voicevox_core import VoicevoxCore, METAS
+
+core = VoicevoxCore(open_jtalk_dict_dir=Path("open_jtalk_dic_utf_8-1.11"))
+
+meta情報
+from pprint import pprint
+pprint(METAS)
+
