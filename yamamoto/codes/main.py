@@ -1,7 +1,4 @@
 import tkinter as tk
-import tkinter.font as tkFont
-import tkinter.messagebox as tkm
-import google.generativeai as genai
 from PIL import Image, ImageTk
 from time import sleep
 import threading

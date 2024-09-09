@@ -6,7 +6,6 @@ import google.ai.generativelanguage as glm
 from time import sleep
 import threading
 from time import time
-import datetime
 
 class ChatPlayer:
     def __init__(self, root, frame: tk.Frame, voicevox, gif_player, user_id):
@@ -90,7 +89,7 @@ class ChatPlayer:
 
         start_time = time()  # Record the start time
         # 音声を再生
-        self.voicevox.play_wav("yamamoto/codes/output.wav")
+        self.voicevox.play_wav("yamamoto/codes/voice/output.wav")
         end_time = time()  # Record the end time
         elapsed_time = end_time - start_time
         print(f"再生時間：{elapsed_time:.2f} seconds.")
