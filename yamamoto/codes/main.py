@@ -12,8 +12,8 @@ from voicevox_client2 import VoiceGenerator
 
 def main():
     # オブジェクトの定義
-    zunda1_path = './images/wait_zunda.gif'
-    zunda2_path = './images/talk_zunda.gif'
+    zunda1_path = 'yamamoto/codes/images/wait_zunda.gif'
+    zunda2_path = 'yamamoto/codes/images/talk_zunda.gif'
 
     # GUIの基本ウィンドウを作成
     root = tk.Tk()
