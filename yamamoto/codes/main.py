@@ -56,7 +56,7 @@ class GifPlayer(threading.Thread):
         self.last_frame_index = None
 
         # フレームの読み込み
-        self.load_frames2()
+        self.load_frames1()
 
     # 残像なし
     def load_frames1(self):
@@ -108,7 +108,7 @@ class GifPlayer(threading.Thread):
     def update_gif(self, path):
         """GIFのパスを更新する"""
         self.path1 = path
-        self.load_frames2()
+        self.load_frames1()
     
     
 
