@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
+import textwrap
 import google.generativeai as genai
 import google.ai.generativelanguage as glm
 from time import sleep
@@ -20,6 +21,13 @@ class ChatPlayer:
 
         self.create_widgets()
 
+    # 指定した文字数でテキストを改行
+    def text_to_listbox(self, text):
+        wrap_length = 40    # 改行する文字数を設定
+        wrapped_text = textwrap.fill(text, width=wrap_length)
+        # 改行されたテキストをListboxに追加
+        for line in wrapped_text.split('\n'):
+            self.listbox.insert(tk.END, line)
 
     def create_widgets(self):
         large_font = tkFont.Font(size=14)
@@ -84,7 +92,7 @@ class ChatPlayer:
         # 音声再生前にGIFをpath2に切り替え
         self.gif_player.update_gif(self.gif_player.path2)
         # 文章を表示
-        self.listbox.insert(tk.END, botsay)
+        self.text_to_listbox(botsay)
 
         start_time = time()  # Record the start time
         # 音声を再生

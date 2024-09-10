@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as tkFont
 from PIL import Image, ImageTk
 from time import sleep
 import threading
@@ -17,15 +18,15 @@ def main():
     root.title("Sample Application")
 
     # ここでウインドウサイズを定義する
-    root.geometry('1000x600')
+    root.geometry('1200x600')
 
     # メインフレーム作成
     main_frame = tk.Frame(root, bg='lightblue')
-    main_frame.pack(side=tk.LEFT, fill=tk.Y)
+    main_frame.pack(side=tk.LEFT, fill=tk.BOTH)
 
     # サブフレーム作成
     sub_frame = tk.Frame(root, bg='lightgreen')
-    sub_frame.pack(side=tk.RIGHT, fill=tk.Y)
+    sub_frame.pack(side=tk.RIGHT, fill=tk.BOTH)
 
     # アニメーションを開始
     gif_player = TkGif(root, zunda1_path, zunda2_path, main_frame)
@@ -56,7 +57,7 @@ class GifPlayer(threading.Thread):
         self.last_frame_index = None
 
         # フレームの読み込み
-        self.load_frames1()
+        self.load_frames2()
 
     # 残像なし
     def load_frames1(self):
@@ -108,7 +109,7 @@ class GifPlayer(threading.Thread):
     def update_gif(self, path):
         """GIFのパスを更新する"""
         self.path1 = path
-        self.load_frames1()
+        self.load_frames2()
     
     
 
@@ -119,8 +120,12 @@ class TkGif:
         self.path2 = path2
         self.frame = frame
 
-        self.label = tk.Label(self.frame, text='ずんだもんなのだ!')
-        self.label.pack()
+        large_font = tkFont.Font(size=25)
+
+        self.label = tk.Label(self.frame)
+        self.label.pack(fill="x")
+        self.txlabel = tk.Label(self.frame, text='', fg="lightgreen", font=large_font)  # テキスト挿入
+        self.txlabel.pack(fill="x")
 
         self.player = GifPlayer(self.path1, self.path2, self.label)
 
