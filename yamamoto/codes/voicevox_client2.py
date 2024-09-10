@@ -14,7 +14,7 @@ class VoiceGenerator:
         dictionary_path = "yamamoto/voicevox/open_jtalk_dic_utf_8-1.11"
         self.core = VoicevoxCore(open_jtalk_dict_dir=Path(dictionary_path))
         self.speaker_id = 3
-        self.output_file = "yamamoto/codes/output.wav"
+        self.output_file = "yamamoto/codes/voice/output.wav"
 
         # モデルが読み込まれていない場合はロードする
         if not self.core.is_model_loaded(self.speaker_id):

@@ -111,13 +111,17 @@ class ChatPlayer:
         profile = self.get_user_profile()
         user_name = profile['display_name']
 
-        chat = self.create_chat(user_name)
+        if self.history == []:  # 履歴が空のときの処理
+            chat = self.create_chat(user_name)
+        else:
+            chat = self.model.start_chat(history=self.history)
+            
         response = chat.send_message(text)
-
         # 履歴に新しいユーザーメッセージと応答を追加する
         self.history.append(glm.Content(role='user', parts=[glm.Part(text=text)]))
         self.history.append(glm.Content(role='model', parts=[glm.Part(text=response.text)]))
 
+        print(response)
         return response.text
 
     def create_chat(self, user_name):

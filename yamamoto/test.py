@@ -29,9 +29,9 @@ def main():
         image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
 
     # モデルを読み込む
-    weights = os.path.join(directory, "yunet.onnx")
+    weights = os.path.join(directory, "yamamoto/yunet.onnx")
     face_detector = cv2.FaceDetectorYN_create(weights, "", (0, 0))
-    weights = os.path.join(directory, "face_recognizer_fast.onnx")
+    weights = os.path.join(directory, "yamamoto/face_recognizer_fast.onnx")
     face_recognizer = cv2.FaceRecognizerSF_create(weights, "")
 
     # 入力サイズを指定する
