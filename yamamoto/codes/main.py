@@ -1,19 +1,16 @@
 import tkinter as tk
-import tkinter.font as tkFont
-import tkinter.messagebox as tkm
-import google.generativeai as genai
 from PIL import Image, ImageTk
 from time import sleep
 import threading
-from time import time
 
+from chatbot_client import ChatPlayer
 #from voicevox_client1 import VoiceVoxClient
 from voicevox_client2 import VoiceGenerator
 
 def main():
     # オブジェクトの定義
-    zunda1_path = './images/wait_zunda.gif'
-    zunda2_path = './images/talk_zunda.gif'
+    zunda1_path = 'yamamoto/codes/images/wait_zunda.gif'
+    zunda2_path = 'yamamoto/codes/images/talk_zunda.gif'
 
     # GUIの基本ウィンドウを作成
     root = tk.Tk()
@@ -35,11 +32,14 @@ def main():
     gif_player.play()
 
     # Voicevox起動
-    #client = VoiceVoxClient() # オンライン用
-    client = VoiceGenerator() # オフライン用
+    #voicevox = VoiceVoxClient() # オンライン用
+    voicevox = VoiceGenerator() # オフライン用
+
+    # カメラを起動してuser_idを取得
+    user_id = "user999" # default
 
     # チャットボットを作成
-    chat_player = ChatPlayer(root, sub_frame, client, gif_player)
+    chat_player = ChatPlayer(root, sub_frame, voicevox, gif_player, user_id)
 
     root.mainloop()
 
@@ -108,7 +108,7 @@ class GifPlayer(threading.Thread):
     def update_gif(self, path):
         """GIFのパスを更新する"""
         self.path1 = path
-        self.load_frames2()
+        self.load_frames1()
     
     
 
@@ -133,100 +133,6 @@ class TkGif:
     def update_gif(self, path):
         self.player.update_gif(path)
 
-
-class ChatPlayer:
-    def __init__(self, root, frame: tk.Frame, client, gif_player):
-        self.root = root
-        self.frame = frame
-        self.client = client
-        self.gif_player = gif_player
-
-        genai.configure(api_key="AIzaSyBgkZOQx6laXC_DgRBu15CXrXJCNsuM5_Y")
-        self.model = genai.GenerativeModel('gemini-pro')
-
-        self.create_widgets()
-
-    def create_widgets(self):
-        large_font = tkFont.Font(size=14)
-        
-        Static1 = tk.Label(self.frame, text=u'▼　Seriに話しかけよう!　▼', font=large_font)
-        Static1.pack(pady=10)
-
-        self.entry = tk.Entry(self.frame, width=60, font=large_font)
-        self.entry.insert(tk.END, u'こんにちは')
-        self.entry.pack(pady=10)
-
-        self.button = tk.Button(self.frame, text=u'送信', width=60, height=2, font=large_font, command=self.on_send_button_click)
-        self.button.pack(pady=10)
-
-        self.listbox = tk.Listbox(self.frame, width=65, height=20, font=large_font)
-        self.listbox.pack(pady=10)
-
-    def on_send_button_click(self):
-        text = self.entry.get()
-        if text.lower() in ['終了', 'exit']:
-            self.root.quit()  # アプリケーションを終了
-        else:
-            self.entry.delete(0, tk.END)
-            self.add_to_list(text)
-
-    def add_to_list(self, text):
-        mysay = 'you: ' + text
-        print(mysay)
-        self.listbox.insert(tk.END, mysay)
-        
-        # 送信中にボタンのテキストを変更し、無効化
-        self.button.config(state=tk.DISABLED, text='生成中...')
-        
-        # 別スレッドで処理を実行
-        threading.Thread(target=self.process_text, args=(text,)).start()
-
-    def process_text(self, text):
-        try:
-            text = self.talk(text)
-            Seri = 'Seri: ' + text
-            print(Seri)
-        except Exception as e:
-            Seri = 'Seri: エラーが発生しました。'
-            print(f"Error: {e}")
-        
-        self.add_response(text, Seri)
-
-        # 処理が終わったらボタンを有効化
-        self.root.after(0, self.button.config, {'state': tk.NORMAL, 'text': '送信'})
-
-    def add_response(self, text, Seri):
-        start_time = time()  # Record the start time
-        
-        # 音声を作成
-        self.client.text_to_voice(text)
-
-        end_time = time()  # Record the end time
-        elapsed_time = end_time - start_time
-        print(f"{elapsed_time:.2f} seconds.")
-
-        # 音声再生前にGIFをpath2に切り替え
-        self.gif_player.update_gif(self.gif_player.path2)
-        # 文章を表示
-        self.listbox.insert(tk.END, Seri)
-        # 音声を再生
-        self.client.play_wav("yamamoto/codes/output.wav")
-        sleep(0.50) # 時間を空ける
-        # 音声再生後にGIFをpath1に戻す
-        self.gif_player.update_gif(self.gif_player.path1)
-
-
-    def talk(self, say):
-        if say == 'end':
-            return 'ではまた'
-        else:
-            try:
-                response = self.model.generate_content(say)
-                assistant_response = response.text
-                return assistant_response
-            except Exception as e:
-                tkm.showerror("エラー", f"応答を生成できませんでした: {str(e)}")
-                return "よく聞き取れなかったのだ"
 
 if __name__ == "__main__":
     main()
