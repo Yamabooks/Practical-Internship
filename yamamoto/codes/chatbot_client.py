@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.font as tkFont
-import tkinter.messagebox as tkm
 import google.generativeai as genai
 import google.ai.generativelanguage as glm
 from time import sleep
